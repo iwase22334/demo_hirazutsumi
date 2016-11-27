@@ -1,0 +1,50 @@
+#ifndef POLYGON_H
+#define POLYGON_H
+//----------------------------------------------------------
+// include
+//----------------------------------------------------------
+#include <opencv2/core/core.hpp>
+#include <iostream>
+#include <list>
+//----------------------------------------------------------
+// namespace
+//----------------------------------------------------------
+using namespace cv;
+using namespace std;
+//----------------------------------------------------------
+// class Polygon
+//----------------------------------------------------------
+class Polygon{
+private:
+	Vec3d normal;
+	list<Vec3d> points;
+
+public:
+	// Constructor
+	Polygon(){};
+	Polygon(const Vec3d &, list<Vec3d> &);
+	Polygon(Polygon &);
+
+	// Setter
+	void set_normal(const Vec3d &);
+	void add_point(const Vec3d &);
+
+	// Getter
+	Vec3d get_normal() const;
+	list<Vec3d>& get_points();
+
+	// List handler
+	void clear();
+	list<Vec3d>::iterator begin();
+	list<Vec3d>::iterator end();
+	Vec3d& front();
+	Vec3d& back();
+	void push_front(const Vec3d &);
+	void push_back(const Vec3d &);
+	void pop_front();
+	void pop_back();
+
+	// Is x inside of polygon
+	bool is_inner(const Vec3d &);
+};
+#endif

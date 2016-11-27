@@ -1,0 +1,90 @@
+#include"polygon.h"
+//----------------------------------------------------------
+// Constructor
+//----------------------------------------------------------
+
+Polygon::Polygon(const Vec3d & n, list<Vec3d> & lis){
+	normal = n;
+	list<Vec3d>::iterator it_p = lis.begin();
+	while(it_p != lis.end()){
+		points.push_back(*it_p);
+		++ it_p;
+	}
+};
+
+Polygon::Polygon(Polygon & pol){
+	normal = pol.normal;
+	list<Vec3d>::iterator it_p = pol.points.begin();
+	while(it_p != pol.points.end()){
+		points.push_back(*it_p);
+		++ it_p;
+	}
+};
+
+//----------------------------------------------------------
+// Setter
+//----------------------------------------------------------
+void Polygon::set_normal(const Vec3d & x) { normal = x; };
+void Polygon::add_point(const Vec3d & x) { points.push_back(x); };
+
+//----------------------------------------------------------
+// Getter
+//----------------------------------------------------------
+Vec3d Polygon::get_normal() const { return normal; }
+list<Vec3d>& Polygon::get_points() { return points; };
+
+//----------------------------------------------------------
+// List handler
+//----------------------------------------------------------
+void Polygon::clear() { points.clear(); };
+list<Vec3d>::iterator Polygon::begin() { return points.begin(); };
+list<Vec3d>::iterator Polygon::end() { return points.end(); };
+Vec3d& Polygon::front(){ return points.front(); };
+Vec3d& Polygon::back(){ return points.back(); };
+void Polygon::push_front(const Vec3d & x) { points.push_front(x); };
+void Polygon::push_back(const Vec3d & x) { points.push_back(x); };
+void Polygon::pop_front() { points.pop_front(); };
+void Polygon::pop_back() { points.pop_back(); };
+
+//----------------------------------------------------------
+// Is x inside of polygon
+//----------------------------------------------------------
+bool Polygon::is_inner(const Vec3d & x){
+	Vec3d v1;
+	Vec3d v2;
+	Vec3d n;
+	Vec3d it_buf1;
+	Vec3d it_buf2;
+	std::list<Vec3d>::iterator it1 = points.begin();
+	std::list<Vec3d>::iterator it2 = it1;
+	++ it2;
+
+	// Set first closs vector
+	it_buf1 = *it1;
+	v1 = x - it_buf1;
+	it_buf2 = *it2;
+	v2 = it_buf2 - it_buf1;
+	n = v2.cross(v1);
+	++ it1;
+	++ it2;
+	
+	while(it1 != points.end()){
+		//set vector
+		it_buf1 = *it1;
+		v1 = x - it_buf1;
+		it_buf2 = *it2;
+		v2 = it_buf2 - it_buf1;
+			
+		if( norm(v2.cross(v1) + n) < norm(v2.cross(v1)) + norm(n) ){
+			return false;
+		}
+
+		// Increment iterator 
+		++it1;
+		++it2;
+		if(it2 == points.end()){
+			it2 = points.begin();
+		}
+	}
+	return true;
+};
